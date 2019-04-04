@@ -483,11 +483,15 @@ int main(int argc, char *argv[])
 					idevice_activation_response_get_title(response, &response_title);
 					if (response_title) {
 						fprintf(stderr, "Server reports:\n%s\n", response_title);
+						fflush(stdout);
+						fflush(stderr);
 					}
 
 					idevice_activation_response_get_description(response, &response_description);
 					if (response_description) {
 						fprintf(stderr, "Server reports:\n%s\n", response_description);
+						fflush(stdout);
+						fflush(stderr);
 					}
 
 					idevice_activation_response_get_fields(response, &fields);
@@ -538,6 +542,8 @@ int main(int argc, char *argv[])
 									get_user_input(input, 1023, secure);
 								} else {
 									fprintf(stderr, "Server requires input for '%s' but we're not running interactively.\n", field_label ? field_label : field_key);
+									fflush(stdout);
+									fflush(stderr);
 									strcpy(input, "");
 									interactive_count++;
 								}
