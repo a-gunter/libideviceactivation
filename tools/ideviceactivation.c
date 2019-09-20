@@ -85,6 +85,13 @@ static int my_getch(void)
 }
 #endif
 
+#ifdef linux
+static void on_signal(int sig)
+{
+	//SIGPIPE captured to avoid 141 exit value error
+}
+#endif
+
 static void get_user_input(char *buf, int maxlen, int secure)
 {
 	int len = 0;
@@ -110,6 +117,9 @@ static void get_user_input(char *buf, int maxlen, int secure)
 
 int main(int argc, char *argv[])
 {
+	#ifdef linux
+	signal(SIGPIPE, on_signal);
+	#endif
 	idevice_t device = NULL;
 	idevice_error_t ret = IDEVICE_E_UNKNOWN_ERROR;
 	lockdownd_client_t lockdown = NULL;
