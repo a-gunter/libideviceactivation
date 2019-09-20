@@ -30,6 +30,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <ctype.h>
+#include <signal.h>
 
 #include <plist/plist.h>
 #include <libimobiledevice/lockdown.h>
