@@ -50,23 +50,28 @@
 static void print_usage(int argc, char **argv)
 {
 	char *name = NULL;
-	
+
 	name = strrchr(argv[0], '/');
 	printf("Usage: %s COMMAND [OPTIONS]\n", (name ? name + 1: argv[0]));
-	printf("Activate or deactivate a device.\n\n");
+	printf("\n");
+	printf("Activate or deactivate a device.\n");
+	printf("\n");
 	printf("Where COMMAND is one of:\n");
 	printf("  activate\t\tattempt to activate the device\n");
 	printf("  deactivate\t\tdeactivate the device\n");
 	printf("  state\t\t\tquery device about its activation state\n");
-	printf("\nThe following OPTIONS are accepted:\n");
+	printf("\n");
+	printf("The following OPTIONS are accepted:\n");
 	printf("  -d, --debug\t\tenable communication debugging\n");
 	printf("  -u, --udid UDID\ttarget specific device by UDID\n");
+	printf("  -n, --network\t\tconnect to network device\n");
 	printf("  -b, --batch\t\texplicitly run in non-interactive mode (default: auto-detect)\n");
 	printf("  -s, --service URL\tuse activation webservice at URL instead of default\n");
 	printf("  -v, --version\t\tprint version information and exit\n");
 	printf("  -h, --help\t\tprints usage information\n");
 	printf("\n");
-	printf("Homepage: <http://libimobiledevice.org>\n");
+	printf("Homepage:    <" PACKAGE_URL ">\n");
+	printf("Bug Reports: <" PACKAGE_BUGREPORT ">\n");
 }
 
 #ifdef WIN32
@@ -135,6 +140,7 @@ int main(int argc, char *argv[])
 	int i;
 	int interactive = 1;
 	int result = EXIT_FAILURE;
+	int use_network = 0;
 
 	typedef enum {
 		OP_NONE = 0, OP_ACTIVATE, OP_DEACTIVATE, OP_GETSTATE
@@ -158,6 +164,10 @@ int main(int argc, char *argv[])
 				return EXIT_FAILURE;
 			}
 			udid = argv[i];
+			continue;
+		}
+		else if (!strcmp(argv[i], "-n") || !strcmp(argv[i], "--network")) {
+			use_network = 1;
 			continue;
 		}
 		else if (!strcmp(argv[i], "-s") || !strcmp(argv[i], "--service")) {
@@ -210,20 +220,14 @@ int main(int argc, char *argv[])
 		return EXIT_FAILURE;
 	}
 
-	if (udid) {
-		ret = idevice_new(&device, udid);
-		if (ret != IDEVICE_E_SUCCESS) {
-			printf("No device found with UDID %s, is it plugged in?\n", udid);
-			return EXIT_FAILURE;
+	ret = idevice_new_with_options(&device, udid, (use_network) ? IDEVICE_LOOKUP_NETWORK : IDEVICE_LOOKUP_USBMUX);
+	if (ret != IDEVICE_E_SUCCESS) {
+		if (udid) {
+			printf("ERROR: Device %s not found!\n", udid);
+		} else {
+			printf("ERROR: No device found!\n");
 		}
-	}
-	else
-	{
-		ret = idevice_new(&device, NULL);
-		if (ret != IDEVICE_E_SUCCESS) {
-			printf("No device found, is it plugged in?\n");
-			return EXIT_FAILURE;
-		}
+		return EXIT_FAILURE;
 	}
 
 	if (LOCKDOWN_E_SUCCESS != lockdownd_client_new_with_handshake(device, &lockdown, "ideviceactivation")) {

@@ -2,7 +2,7 @@
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ(2.64)
-AC_INIT([libideviceactivation], [1.1.0], [https://github.com/libimobiledevice/libideviceactivation/issues],, [http://libimobiledevice.org])
+AC_INIT([libideviceactivation], [1.1.2], [https://github.com/libimobiledevice/libideviceactivation/issues],, [https://libimobiledevice.org])
 AM_INIT_AUTOMAKE([dist-bzip2 no-dist-gzip check-news])
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES])
 AC_CONFIG_SRCDIR([src/])
@@ -18,8 +18,8 @@ dnl libtool versioning
 LIBIDEVICEACTIVATION_SO_VERSION=3:0:1
 
 dnl Minimum package versions
-LIBIMOBILEDEVICE_VERSION=1.2.1
-LIBPLIST_VERSION=1.11
+LIBIMOBILEDEVICE_VERSION=1.3.0
+LIBPLIST_VERSION=2.2.0
 LIBCURL_VERSION=7.20
 LIBXML2_VERSION=2.9
 
@@ -37,7 +37,7 @@ AC_PROG_LIBTOOL
 
 # Checks for libraries.
 PKG_CHECK_MODULES(libimobiledevice, libimobiledevice-1.0 >= $LIBIMOBILEDEVICE_VERSION)
-PKG_CHECK_MODULES(libplist, libplist >= $LIBPLIST_VERSION)
+PKG_CHECK_MODULES(libplist, libplist-2.0 >= $LIBPLIST_VERSION)
 PKG_CHECK_MODULES(libcurl, libcurl >= $LIBCURL_VERSION)
 PKG_CHECK_MODULES(libxml2, libxml-2.0 >= $LIBXML2_VERSION)
 
